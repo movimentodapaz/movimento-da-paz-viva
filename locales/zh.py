@@ -1,31 +1,31 @@
 # -*- coding: utf-8 -*-
 
 TEXTS = {
-    "lang_name": "Traditional Chinese",
+    "lang_name": "繁體中文",
 
-    "nav_home": "Home",
-    "nav_register": "Register",
-    "nav_map": "Map",
+    "nav_home": "首頁",
+    "nav_register": "註冊",
+    "nav_map": "地圖",
 
-    "title": "Living Peace Movement",
-    "subtitle": "A collective field of conscious presence.",
+    "title": "活生生的和平運動",
+    "subtitle": "一個集體的覺知臨在場域，由世界各地的真實人們共同守護內在和平。",
 
-    "cta": "Become a Peacekeeper",
+    "cta": "成為和平守護者",
 
-    "map_title": "Global Presence in Real Time",
-    "empty_map": "There are no peacekeepers registered yet.",
+    "map_title": "全球即時臨在",
+    "empty_map": "目前地圖上尚未有任何和平守護者。",
 
-    "register_title": "Peacekeeper Registration",
-    "register_intro": "This is a simple and conscious gesture.",
+    "register_title": "和平守護者註冊",
+    "register_intro": "這是一個簡單而覺知的行動。您的名字可以是真實的或象徵性的，電子郵件為選填。",
 
-    "field_name": "Name or nickname",
-    "field_email": "Email",
-    "field_city": "City",
-    "field_country": "Country",
+    "field_name": "姓名或暱稱（選填）",
+    "field_email": "電子郵件（選填）",
+    "field_city": "城市",
+    "field_country": "國家",
 
-    "submit": "Register presence",
-    "success": "Presence registered successfully.",
-    "already_registered": "This device already has an active registration.",
+    "submit": "登記臨在",
+    "success": "🌞 您的臨在已成功登記。",
+    "already_registered": "此裝置已經有一筆有效的登記。",
 
-    "credit": "Founded on December 1, 2025 by Jose Carlos Rosa Farias"
+    "credit": "於 2025 年 12 月 1 日由 José Carlos Rosa Farias 創立"
 }
