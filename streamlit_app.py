@@ -29,12 +29,9 @@ LANGS = {
     "fr": fr.TEXTS,
 }
 
-# ---------- DETECÇÃO AUTOMÁTICA ----------
+# ---------- IDIOMA PADRÃO + PERSISTÊNCIA ----------
 if "lang" not in st.session_state:
-    browser_lang = st.get_option("browser.language")
-    if browser_lang:
-        browser_lang = browser_lang[:2].lower()
-    st.session_state["lang"] = browser_lang if browser_lang in LANGS else "pt"
+    st.session_state["lang"] = "pt"
 
 # ---------- SELETOR VISÍVEL ----------
 lang = st.selectbox(
@@ -44,7 +41,7 @@ lang = st.selectbox(
     format_func=lambda x: LANGS[x]["lang_name"]
 )
 
-# ---------- PERSISTÊNCIA ----------
+# ---------- SALVA NA SESSÃO ----------
 st.session_state["lang"] = lang
 T = LANGS[lang]
 
@@ -77,7 +74,13 @@ with col1:
         f"""
         <html><body style="margin:0;height:220px;display:flex;align-items:center;justify-content:center;">
         <img src="data:image/png;base64,{logo_base64}" style="width:130px;animation:spin 12s ease-in-out infinite;">
-        <style>@keyframes spin{{0%{{transform:rotate(0) scale(.95)}}50%{{transform:rotate(180deg) scale(1.05)}}100%{{transform:rotate(360deg) scale(.95)}}}}</style>
+        <style>
+        @keyframes spin {{
+            0% {{ transform: rotate(0deg) scale(.95); }}
+            50% {{ transform: rotate(180deg) scale(1.05); }}
+            100% {{ transform: rotate(360deg) scale(.95); }}
+        }}
+        </style>
         </body></html>
         """,
         height=220
