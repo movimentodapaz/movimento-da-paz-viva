@@ -5,6 +5,20 @@ import streamlit as st
 from pathlib import Path
 import plotly.graph_objects as go
 
+from locales import pt, en
+
+
+# ---------- IDIOMAS ----------
+LANGS = {
+    "pt": pt.TEXTS,
+    "en": en.TEXTS,
+}
+
+# Se idioma já estiver na sessão (vindo da Home), usa.
+# Caso contrário, assume português.
+lang = st.session_state.get("lang", "pt")
+T = LANGS.get(lang, pt.TEXTS)
+
 
 # ---------- RESOLUÇÃO SEGURA DE PATH ----------
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,8 +55,11 @@ def render_mapa():
     conn = get_conn()
     df = pd.read_sql("SELECT * FROM pacificadores", conn)
 
+    # ---------- TÍTULO DO MAPA (I18N) ----------
+    st.markdown(f"## {T['map_title']}")
+
     if df.empty:
-        st.info("Ainda não há pacificadores registrados no mapa.")
+        st.info(T["empty_map"])
         return
 
     # ---------- CONTADORES ----------
@@ -59,7 +76,7 @@ def render_mapa():
     lat_plot = df["latitude"] + np.random.randn(len(df)) * 0.01
     lon_plot = df["longitude"] + np.random.randn(len(df)) * 0.01
 
-    # ---------- MAPA COM COR SOLAR FIXA ----------
+    # ---------- MAPA (COR SOLAR FIXA) ----------
     fig = go.Figure(
         go.Scattermapbox(
             lat=lat_plot,
@@ -67,7 +84,7 @@ def render_mapa():
             mode="markers",
             marker=dict(
                 size=10,
-                color=["#FFD700"] * len(lat_plot),  # 🌞 dourado solar (desktop + mobile)
+                color=["#FFD700"] * len(lat_plot),  # 🌞 dourado solar
                 opacity=0.9
             ),
             text=df["cidade"],
