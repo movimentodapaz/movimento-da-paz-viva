@@ -66,8 +66,16 @@ def render_mapa():
         lon="lon_plot",
         hover_name="cidade",
         zoom=1,
-        height=600,
-        color_discrete_sequence=["#FFD700"]  # 🌞 AMARELO DOURADO (SOL)
+        height=600
+    )
+
+    # 🔑 FORÇA COR SOLAR (AMARELO DOURADO)
+    fig.update_traces(
+        marker=dict(
+            color="#FFD700",   # 🌞 dourado solar
+            size=10,
+            opacity=0.85
+        )
     )
 
     fig.update_layout(
