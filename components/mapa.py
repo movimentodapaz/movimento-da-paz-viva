@@ -1,9 +1,9 @@
 import sqlite3
 import pandas as pd
-import plotly.express as px
-from pathlib import Path
-import streamlit as st
 import numpy as np
+import streamlit as st
+from pathlib import Path
+import plotly.graph_objects as go
 
 
 # ---------- RESOLUÇÃO SEGURA DE PATH ----------
@@ -56,32 +56,33 @@ def render_mapa():
     col3.metric("🌎 Exterior", exterior)
 
     # ---------- JITTER PARA PRIVACIDADE ----------
-    df["lat_plot"] = df["latitude"] + np.random.randn(len(df)) * 0.01
-    df["lon_plot"] = df["longitude"] + np.random.randn(len(df)) * 0.01
+    lat_plot = df["latitude"] + np.random.randn(len(df)) * 0.01
+    lon_plot = df["longitude"] + np.random.randn(len(df)) * 0.01
 
-    # ---------- MAPA ----------
-    fig = px.scatter_mapbox(
-        df,
-        lat="lat_plot",
-        lon="lon_plot",
-        hover_name="cidade",
-        zoom=1,
-        height=600
-    )
-
-    # 🔑 FORÇA COR SOLAR (AMARELO DOURADO)
-    fig.update_traces(
-        marker=dict(
-            color="#FFD700",   # 🌞 dourado solar
-            size=10,
-            opacity=0.85
+    # ---------- MAPA COM CONTROLE TOTAL ----------
+    fig = go.Figure(
+        go.Scattermapbox(
+            lat=lat_plot,
+            lon=lon_plot,
+            mode="markers",
+            marker=dict(
+                size=10,
+                color="#FFD700",   # 🌞 AMARELO DOURADO SOLAR
+                opacity=0.9
+            ),
+            text=df["cidade"],
+            hoverinfo="text"
         )
     )
 
     fig.update_layout(
-        mapbox_style="open-street-map",
+        mapbox=dict(
+            style="open-street-map",
+            center=dict(lat=0, lon=0),
+            zoom=1
+        ),
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
-        mapbox=dict(center=dict(lat=0, lon=0), zoom=1)
+        height=600
     )
 
     st.plotly_chart(fig, use_container_width=True)
