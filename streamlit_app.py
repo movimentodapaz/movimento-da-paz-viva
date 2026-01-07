@@ -29,9 +29,32 @@ LANGS = {
     "fr": fr.TEXTS,
 }
 
-# ---------- IDIOMA PADRÃO + PERSISTÊNCIA ----------
+# ---------- DETECÇÃO REAL VIA JAVASCRIPT ----------
 if "lang" not in st.session_state:
-    st.session_state["lang"] = "pt"
+
+    js_lang = components.html(
+        """
+        <script>
+        const lang = navigator.language || navigator.languages[0];
+        const streamlitLang = lang ? lang.slice(0,2).toLowerCase() : "pt";
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.value = streamlitLang;
+        input.id = "detected_lang";
+        document.body.appendChild(input);
+        </script>
+        """,
+        height=0
+    )
+
+    # Fallback seguro (JS não retorna valor diretamente)
+    # Leitura indireta via query params simulados
+    detected = st.experimental_get_query_params().get("lang", [None])[0]
+
+    if detected in LANGS:
+        st.session_state["lang"] = detected
+    else:
+        st.session_state["lang"] = "pt"
 
 # ---------- SELETOR VISÍVEL ----------
 lang = st.selectbox(
@@ -41,7 +64,7 @@ lang = st.selectbox(
     format_func=lambda x: LANGS[x]["lang_name"]
 )
 
-# ---------- SALVA NA SESSÃO ----------
+# ---------- SALVA ESCOLHA HUMANA ----------
 st.session_state["lang"] = lang
 T = LANGS[lang]
 
