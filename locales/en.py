@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+
 TEXTS = {
     "lang_name": "English",
 
-    # Navegação
+    # Navigation
     "nav_home": "Home",
     "nav_register": "Register",
     "nav_map": "Map",
@@ -14,11 +16,11 @@ TEXTS = {
     ),
     "cta": "Become a Peacekeeper",
 
-    # Mapa
+    # Map
     "map_title": "🌐 Global Presence in Real Time",
     "empty_map": "There are no peacekeepers registered yet.",
 
-    # Cadastro
+    # Registration
     "register_title": "Peacekeeper Registration",
     "register_intro": (
         "This is a simple and conscious gesture.<br>"
@@ -30,7 +32,8 @@ TEXTS = {
     "field_country": "Country",
     "submit": "Register presence",
     "success": "🌞 Your presence has been successfully registered.",
-    "already_registered": "This device already has an active registration."
-}
+    "already_registered": "This device already has an active registration.",
 
-"credit": "Founded on December 1st, 2025 by José Carlos Rosa Farias",
+    # Credit
+    "credit": "Founded on December 1st, 2025 by José Carlos Rosa Farias"
+}
