@@ -6,7 +6,8 @@ import streamlit.components.v1 as components
 import base64
 from pathlib import Path
 
-from locales import pt, en, es 
+from locales import pt, en, es
+
 
 st.set_page_config(
     page_title="Movimento da Paz Viva",
@@ -30,7 +31,7 @@ LANGS = {
 }
 
 # ---------- IDIOMA ATIVO ----------
-if "lang" not in st.session_state:
+if "lang" not in st.session_state or st.session_state["lang"] not in LANGS:
     st.session_state["lang"] = "pt"
 
 lang = st.selectbox(
@@ -42,14 +43,16 @@ lang = st.selectbox(
 
 st.session_state["lang"] = lang
 T = LANGS[lang]
-st.session_state["texts"] = T  # para mapa e cadastro
+st.session_state["texts"] = T  # usado por mapa e cadastro
 
 # ---------- LOGO ----------
 BASE_DIR = Path(__file__).resolve().parent
 logo_path = BASE_DIR / "assets" / "logo_paz.png"
 
-with open(logo_path, "rb") as f:
-    logo_base64 = base64.b64encode(f.read()).decode("utf-8")
+logo_base64 = ""
+if logo_path.exists():
+    with open(logo_path, "rb") as f:
+        logo_base64 = base64.b64encode(f.read()).decode("utf-8")
 
 # ---------- NAVEGAÇÃO ----------
 nav1, nav2, nav3 = st.columns(3)
@@ -71,21 +74,25 @@ st.divider()
 col1, col2, col3 = st.columns([1.2, 3.6, 1.2])
 
 with col1:
-    components.html(
-        f"""
-        <html><body style="margin:0;height:220px;display:flex;align-items:center;justify-content:center;">
-        <img src="data:image/png;base64,{logo_base64}" style="width:130px;animation:spin 12s ease-in-out infinite;">
-        <style>
-        @keyframes spin {{
-            0% {{ transform: rotate(0deg) scale(.95); }}
-            50% {{ transform: rotate(180deg) scale(1.05); }}
-            100% {{ transform: rotate(360deg) scale(.95); }}
-        }}
-        </style>
-        </body></html>
-        """,
-        height=220
-    )
+    if logo_base64:
+        components.html(
+            f"""
+            <html>
+            <body style="margin:0;height:220px;display:flex;align-items:center;justify-content:center;">
+                <img src="data:image/png;base64,{logo_base64}"
+                     style="width:130px;animation:spin 12s ease-in-out infinite;">
+                <style>
+                @keyframes spin {{
+                    0% {{ transform: rotate(0deg) scale(0.95); }}
+                    50% {{ transform: rotate(180deg) scale(1.05); }}
+                    100% {{ transform: rotate(360deg) scale(0.95); }}
+                }}
+                </style>
+            </body>
+            </html>
+            """,
+            height=220
+        )
 
 with col2:
     st.markdown(
@@ -115,7 +122,7 @@ st.divider()
 st.markdown(
     f"""
     <p style="text-align:center; font-size:14px; opacity:0.7; margin-top:40px">
-    {T['credit']}
+        {T['credit']}
     </p>
     """,
     unsafe_allow_html=True
