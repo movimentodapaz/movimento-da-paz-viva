@@ -25,7 +25,7 @@ st.markdown("""
 # ---------- IDIOMAS (EXPLÍCITO E SEGURO) ----------
 LANGS = {
     "pt": pt.TEXTS,
-    "en
+    "en": en.TEXTS,
 }
 
 # ---------- IDIOMA ATIVO ----------
