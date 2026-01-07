@@ -3,26 +3,47 @@ import pandas as pd
 import plotly.express as px
 from pathlib import Path
 import streamlit as st
+import numpy as np
 
 
-# ---------- RESOLUÇÃO SEGURA DO CAMINHO DO BANCO ----------
+# ---------- RESOLUÇÃO SEGURA DE PATH ----------
 BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = BASE_DIR / "data" / "pacificadores.db"
+DATA_DIR = BASE_DIR / "data"
+DB_PATH = DATA_DIR / "pacificadores.db"
 
 
+# ---------- GARANTE EXISTÊNCIA DO BANCO ----------
 def get_conn():
-    if not DB_PATH.exists():
-        st.error(f"Banco de dados não encontrado em: {DB_PATH}")
-        st.stop()
-    return sqlite3.connect(DB_PATH)
+    DATA_DIR.mkdir(exist_ok=True)
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS pacificadores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            email TEXT,
+            cidade TEXT,
+            pais TEXT,
+            latitude REAL,
+            longitude REAL,
+            device_id TEXT UNIQUE,
+            data_registro TEXT
+        )
+    """)
+
+    conn.commit()
+    return conn
 
 
 def render_mapa():
-    # ---------- LEITURA DO BANCO ----------
-    df = pd.read_sql("SELECT * FROM pacificadores", get_conn())
+    conn = get_conn()
+
+    df = pd.read_sql("SELECT * FROM pacificadores", conn)
 
     if df.empty:
-        st.info("Ainda não há pacificadores registrados.")
+        st.info("Ainda não há pacificadores registrados no mapa.")
         return
 
     # ---------- CONTADORES ----------
@@ -36,8 +57,8 @@ def render_mapa():
     col3.metric("🌎 Exterior", exterior)
 
     # ---------- JITTER PARA PRIVACIDADE ----------
-    df["lat_plot"] = df["latitude"] + (pd.Series(pd.np.random.randn(len(df))) * 0.01)
-    df["lon_plot"] = df["longitude"] + (pd.Series(pd.np.random.randn(len(df))) * 0.01)
+    df["lat_plot"] = df["latitude"] + np.random.randn(len(df)) * 0.01
+    df["lon_plot"] = df["longitude"] + np.random.randn(len(df)) * 0.01
 
     # ---------- MAPA ----------
     fig = px.scatter_mapbox(
@@ -52,10 +73,7 @@ def render_mapa():
     fig.update_layout(
         mapbox_style="open-street-map",
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
-        mapbox=dict(
-            center=dict(lat=0, lon=0),
-            zoom=1
-        )
+        mapbox=dict(center=dict(lat=0, lon=0), zoom=1)
     )
 
     st.plotly_chart(fig, use_container_width=True)
