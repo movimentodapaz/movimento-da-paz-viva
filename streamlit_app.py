@@ -93,7 +93,7 @@ with col1:
                 @keyframes spin {{
                     0% {{ transform: rotate(0deg) scale(0.95); }}
                     
-                    300% {{ transform: rotate(360deg) scale(0.95); }}
+                    100% {{ transform: rotate(360deg) scale(0.95); }}
                 }}
                 </style>
             </body>
