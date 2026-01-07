@@ -32,3 +32,5 @@ TEXTS = {
     "success": "🌞 Your presence has been successfully registered.",
     "already_registered": "This device already has an active registration."
 }
+
+"credit": "Founded on December 1st, 2025 by José Carlos Rosa Farias",

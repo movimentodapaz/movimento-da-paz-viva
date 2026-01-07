@@ -29,3 +29,5 @@ TEXTS = {
     "success": "🌞 Votre présence a été enregistrée avec succès.",
     "already_registered": "Cet appareil dispose déjà d’une inscription active."
 }
+
+"credit": "Fondé le 1er décembre 2025 par José Carlos Rosa Farias",

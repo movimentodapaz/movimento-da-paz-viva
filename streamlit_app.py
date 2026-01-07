@@ -32,23 +32,10 @@ LANGS = {
     "ar": ar.TEXTS,
 }
 
-# ---------- DETECÇÃO REAL VIA JAVASCRIPT ----------
+# ---------- DETECÇÃO / PERSISTÊNCIA ----------
 if "lang" not in st.session_state:
-    components.html(
-        """
-        <script>
-        const lang = navigator.language || navigator.languages[0];
-        const code = lang ? lang.slice(0,2).toLowerCase() : "pt";
-        window.location.search = "?lang=" + code;
-        </script>
-        """,
-        height=0
-    )
+    st.session_state["lang"] = "pt"
 
-    detected = st.experimental_get_query_params().get("lang", [None])[0]
-    st.session_state["lang"] = detected if detected in LANGS else "pt"
-
-# ---------- SELETOR VISÍVEL ----------
 lang = st.selectbox(
     "🌐 Language / Idioma",
     options=list(LANGS.keys()),
@@ -118,23 +105,17 @@ with col3:
 
 st.divider()
 
-# ---------- MAPA ----------
-st.markdown(f"## {T['map_title']}")
-render_mapa()
-
-# (… TODO O ARQUIVO streamlit_app.py PERMANECE IGUAL AO ATUAL …)
-
-# ---------- MAPA ----------
+# ---------- MAPA (ÚNICO) ----------
 st.markdown(f"## {T['map_title']}")
 render_mapa()
 
 st.divider()
 
-# ---------- CRÉDITO INSTITUCIONAL ----------
+# ---------- CRÉDITO (I18N) ----------
 st.markdown(
-    """
+    f"""
     <p style="text-align:center; font-size:14px; opacity:0.7; margin-top:40px">
-    Fundado no Brasil em 1º de Dezembro de 2025 por <strong>José Carlos Rosa Farias</strong>
+    {T['credit']}
     </p>
     """,
     unsafe_allow_html=True

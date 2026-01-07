@@ -32,3 +32,5 @@ TEXTS = {
     "success": "🌞 Sua presença foi registrada com sucesso.",
     "already_registered": "Este dispositivo já possui um cadastro ativo."
 }
+
+"credit": "Fundado em 1º de Dezembro de 2025 por José Carlos Rosa Farias",
