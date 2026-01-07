@@ -4,7 +4,7 @@ import streamlit.components.v1 as components
 import base64
 from pathlib import Path
 
-from locales import pt, en, es, fr
+from locales import pt, en, es, fr, zh, ru, ar
 
 
 st.set_page_config(
@@ -27,34 +27,26 @@ LANGS = {
     "en": en.TEXTS,
     "es": es.TEXTS,
     "fr": fr.TEXTS,
+    "zh": zh.TEXTS,
+    "ru": ru.TEXTS,
+    "ar": ar.TEXTS,
 }
 
 # ---------- DETECÇÃO REAL VIA JAVASCRIPT ----------
 if "lang" not in st.session_state:
-
-    js_lang = components.html(
+    components.html(
         """
         <script>
         const lang = navigator.language || navigator.languages[0];
-        const streamlitLang = lang ? lang.slice(0,2).toLowerCase() : "pt";
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.value = streamlitLang;
-        input.id = "detected_lang";
-        document.body.appendChild(input);
+        const code = lang ? lang.slice(0,2).toLowerCase() : "pt";
+        window.location.search = "?lang=" + code;
         </script>
         """,
         height=0
     )
 
-    # Fallback seguro (JS não retorna valor diretamente)
-    # Leitura indireta via query params simulados
     detected = st.experimental_get_query_params().get("lang", [None])[0]
-
-    if detected in LANGS:
-        st.session_state["lang"] = detected
-    else:
-        st.session_state["lang"] = "pt"
+    st.session_state["lang"] = detected if detected in LANGS else "pt"
 
 # ---------- SELETOR VISÍVEL ----------
 lang = st.selectbox(
@@ -64,7 +56,6 @@ lang = st.selectbox(
     format_func=lambda x: LANGS[x]["lang_name"]
 )
 
-# ---------- SALVA ESCOLHA HUMANA ----------
 st.session_state["lang"] = lang
 T = LANGS[lang]
 
