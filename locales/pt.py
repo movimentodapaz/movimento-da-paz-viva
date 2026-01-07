@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 TEXTS = {
-    "lang_name": "Portugues",
+    "lang_name": "Português",
 
     "nav_home": "Home",
     "nav_register": "Cadastro",

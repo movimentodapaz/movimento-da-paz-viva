@@ -61,40 +61,67 @@ df = pd.read_sql("SELECT * FROM pacificadores", get_conn())
 if df.empty:
     st.info(T["empty_map"])
 else:
-    total = len(df)
-    brasil = len(df[df["pais"].str.lower() == "brasil"])
-    exterior = total - brasil
+    # ---------- VALIDAÇÃO DE COORDENADAS ----------
+    df_valid = df[
+        df["latitude"].between(-90, 90) &
+        df["longitude"].between(-180, 180)
+    ].copy()
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("🌍 Total", total)
-    c2.metric("🇧🇷 Brasil", brasil)
-    c3.metric("🌎 Exterior", exterior)
+    invalidos = len(df) - len(df_valid)
 
-    lat_plot = df["latitude"] + np.random.randn(len(df)) * 0.01
-    lon_plot = df["longitude"] + np.random.randn(len(df)) * 0.01
+    if invalidos > 0:
+        st.warning(f"⚠️ {invalidos} registro(s) com coordenadas inválidas foram ignorados no mapa.")
 
-    fig = go.Figure(
-        go.Scattermapbox(
-            lat=lat_plot,
-            lon=lon_plot,
-            mode="markers",
-            marker=dict(
-                size=10,
-                color=["#FFD700"] * len(lat_plot),
-                opacity=0.9
-            ),
-            text=df["cidade"],
-            hoverinfo="text"
+    if df_valid.empty:
+        st.error("Não há pacificadores com coordenadas válidas para exibição.")
+    else:
+        # ---------- CONTADORES ----------
+        total = len(df_valid)
+        brasil = len(df_valid[df_valid["pais"].str.lower() == "brasil"])
+        exterior = total - brasil
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("🌍 Total", total)
+        c2.metric("🇧🇷 Brasil", brasil)
+        c3.metric("🌎 Exterior", exterior)
+
+        # ---------- JITTER CONTROLADO (MUITO MENOR) ----------
+        jitter_scale = 0.001  # ~100 metros, não quilômetros
+
+        lat_plot = df_valid["latitude"] + np.random.uniform(
+            -jitter_scale, jitter_scale, size=len(df_valid)
         )
-    )
+        lon_plot = df_valid["longitude"] + np.random.uniform(
+            -jitter_scale, jitter_scale, size=len(df_valid)
+        )
 
-    fig.update_layout(
-        mapbox=dict(style="open-street-map", center=dict(lat=0, lon=0), zoom=1),
-        margin={"r": 0, "t": 0, "l": 0, "b": 0},
-        height=600
-    )
+        # ---------- MAPA ----------
+        fig = go.Figure(
+            go.Scattermapbox(
+                lat=lat_plot,
+                lon=lon_plot,
+                mode="markers",
+                marker=dict(
+                    size=10,
+                    color=["#FFD700"] * len(lat_plot),
+                    opacity=0.9
+                ),
+                text=df_valid["cidade"],
+                hoverinfo="text"
+            )
+        )
 
-    st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(
+            mapbox=dict(
+                style="open-street-map",
+                center=dict(lat=0, lon=0),
+                zoom=1
+            ),
+            margin={"r": 0, "t": 0, "l": 0, "b": 0},
+            height=600
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
 
 st.divider()
 

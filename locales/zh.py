@@ -1,35 +1,31 @@
 # -*- coding: utf-8 -*-
 
 TEXTS = {
-    "lang_name": "繁體中文",
+    "lang_name": "Traditional Chinese",
 
-    "nav_home": "首頁",
-    "nav_register": "註冊",
-    "nav_map": "地圖",
+    "nav_home": "Home",
+    "nav_register": "Register",
+    "nav_map": "Map",
 
-    "title": "活生生的和平運動",
-    "subtitle": (
-        "一個集體的覺知臨在場域。<br>"
-        "來自世界各地的真實人們，將內在和平作為一種活生生的實踐。"
-    ),
+    "title": "Living Peace Movement",
+    "subtitle": "A collective field of conscious presence.",
 
-    "cta": "成為和平守護者",
+    "cta": "Become a Peacekeeper",
 
-    "map_title": "🌐 即時全球臨在",
-    "empty_map": "目前地圖上尚無和平守護者。",
+    "map_title": "Global Presence in Real Time",
+    "empty_map": "There are no peacekeepers registered yet.",
 
-    "register_title": "和平守護者註冊",
-    "register_intro": (
-        "這是一個簡單而覺知的行動。<br>"
-        "您的名字可以是真實的或象徵性的。電子郵件為選填。"
-    ),
-    "field_name": "姓名或暱稱（選填）",
-    "field_email": "電子郵件（選填）",
-    "field_city": "城市",
-    "field_country": "國家",
-    "submit": "登記臨在",
-    "success": "🌞 您的臨在已成功登記。",
-    "already_registered": "此裝置已經有一筆有效的登記。",
+    "register_title": "Peacekeeper Registration",
+    "register_intro": "This is a simple and conscious gesture.",
 
-    "credit": "於 2025 年 12 月 1 日由 José Carlos Rosa Farias 創立"
+    "field_name": "Name or nickname",
+    "field_email": "Email",
+    "field_city": "City",
+    "field_country": "Country",
+
+    "submit": "Register presence",
+    "success": "Presence registered successfully.",
+    "already_registered": "This device already has an active registration.",
+
+    "credit": "Founded on December 1, 2025 by Jose Carlos Rosa Farias"
 }

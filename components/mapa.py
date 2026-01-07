@@ -7,20 +7,22 @@ import numpy as np
 from pathlib import Path
 import plotly.graph_objects as go
 
+from locales import pt, en, es, fr, zh, ru, ar
 
-# ---------- TEXTOS SEGUROS (FALLBACK) ----------
-TEXTS_FALLBACK = {
-    "empty_map": "Ainda não há pacificadores registrados no mapa."
+
+# ---------- IDIOMAS ----------
+LANGS = {
+    "pt": pt.TEXTS,
+    "en": en.TEXTS,
+    "es": es.TEXTS,
+    "fr": fr.TEXTS,
+    "zh": zh.TEXTS,
+    "ru": ru.TEXTS,
+    "ar": ar.TEXTS,
 }
 
-
-def get_text(key: str) -> str:
-    """
-    Busca texto do idioma ativo na sessão.
-    Se não existir, usa fallback seguro.
-    """
-    texts = st.session_state.get("texts", {})
-    return texts.get(key, TEXTS_FALLBACK.get(key, ""))
+lang = st.session_state.get("lang", "pt")
+T = LANGS.get(lang, pt.TEXTS)
 
 
 # ---------- PATH DO BANCO ----------
@@ -54,7 +56,7 @@ def render_mapa():
     df = pd.read_sql("SELECT * FROM pacificadores", get_conn())
 
     if df.empty:
-        st.info(get_text("empty_map"))
+        st.info(T["empty_map"])
         return
 
     # ---------- CONTADORES ----------
@@ -79,7 +81,7 @@ def render_mapa():
             mode="markers",
             marker=dict(
                 size=10,
-                color=["#FFD700"] * len(lat_plot),
+                color=["#FFD700"] * len(lat_plot),  # dourado solar
                 opacity=0.9
             ),
             text=df["cidade"],
