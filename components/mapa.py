@@ -5,9 +5,8 @@ import numpy as np
 from pathlib import Path
 import plotly.graph_objects as go
 
-# ---------- IDIOMA (SEGURO) ----------
+# ---------- IDIOMA ----------
 T = st.session_state.get("texts", {
-    "map_title": "Mapa",
     "empty_map": "Nenhum registro encontrado."
 })
 
@@ -18,16 +17,13 @@ DB_PATH = DATA_DIR / "pacificadores.db"
 
 def get_conn():
     DATA_DIR.mkdir(exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    return conn
+    return sqlite3.connect(DB_PATH)
 
 # ---------- FUNÇÃO PÚBLICA ----------
 def render_mapa():
-    st.markdown(f"## {T.get('map_title')}")
-
     try:
         df = pd.read_sql("SELECT * FROM pacificadores", get_conn())
-    except Exception as e:
+    except Exception:
         st.error("Erro ao acessar o banco de dados.")
         return
 

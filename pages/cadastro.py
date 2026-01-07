@@ -1,10 +1,8 @@
 import streamlit as st
 import sqlite3
 import uuid
-import pandas as pd
 from pathlib import Path
 from datetime import datetime
-import streamlit.components.v1 as components
 
 # ---------- IDIOMA ----------
 T = st.session_state.get("texts")
@@ -18,25 +16,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ---------- COOKIE DEVICE ID ----------
-components.html(
-    """
-    <script>
-    if (!document.cookie.includes("pacificador_id")) {
-        const id = crypto.randomUUID();
-        document.cookie = "pacificador_id=" + id + "; path=/; max-age=31536000";
-    }
-    </script>
-    """,
-    height=0
-)
+# ---------- DEVICE ID (ESTÁVEL E SIMPLES) ----------
+if "device_id" not in st.session_state:
+    st.session_state["device_id"] = str(uuid.uuid4())
 
-# recupera cookie
-device_id = st.experimental_get_query_params().get("pacificador_id", [None])[0]
-
-# fallback JS (segurança)
-if not device_id:
-    device_id = str(uuid.uuid4())
+device_id = st.session_state["device_id"]
 
 # ---------- PATH BANCO ----------
 BASE_DIR = Path(__file__).resolve().parent.parent
