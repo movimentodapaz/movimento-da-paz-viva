@@ -3,37 +3,29 @@
 TEXTS = {
     "lang_name": "English",
 
-    # Navigation
     "nav_home": "Home",
     "nav_register": "Register",
     "nav_map": "Map",
 
-    # Home
     "title": "Living Peace Movement",
-    "subtitle": (
-        "A collective field of conscious presence.<br>"
-        "Real people around the world sustaining inner peace as a living practice."
-    ),
+    "subtitle": "A collective field of conscious presence.",
+
     "cta": "Become a Peacekeeper",
 
-    # Map
-    "map_title": "🌐 Global Presence in Real Time",
+    "map_title": "Global Presence in Real Time",
     "empty_map": "There are no peacekeepers registered yet.",
 
-    # Registration
     "register_title": "Peacekeeper Registration",
-    "register_intro": (
-        "This is a simple and conscious gesture.<br>"
-        "Your name may be real or symbolic. Your email is optional."
-    ),
-    "field_name": "Name or nickname (optional)",
-    "field_email": "Email (optional)",
+    "register_intro": "This is a simple and conscious gesture.",
+
+    "field_name": "Name or nickname",
+    "field_email": "Email",
     "field_city": "City",
     "field_country": "Country",
+
     "submit": "Register presence",
-    "success": "🌞 Your presence has been successfully registered.",
+    "success": "Presence registered successfully.",
     "already_registered": "This device already has an active registration.",
 
-    # Credit
-    "credit": "Founded on December 1st, 2025 by José Carlos Rosa Farias"
+    "credit": "Founded on December 1st, 2025 by Jose Carlos Rosa Farias"
 }
