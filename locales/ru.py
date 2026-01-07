@@ -1,33 +1,31 @@
+# -*- coding: utf-8 -*-
+
 TEXTS = {
-    "lang_name": "Русский",
+    "lang_name": "Russkiy",
 
-    "nav_home": "Главная",
-    "nav_register": "Регистрация",
-    "nav_map": "Карта",
+    "nav_home": "Glavnaya",
+    "nav_register": "Registraciya",
+    "nav_map": "Karta",
 
-    "title": "Движение Живого Мира",
-    "subtitle": (
-        "Коллективное поле осознанного присутствия.<br>"
-        "Реальные люди по всему миру, поддерживающие внутренний мир как живую практику."
-    ),
+    "title": "Dvizhenie Zhivogo Mira",
+    "subtitle": "Kollektivnoe pole osoznannogo prisutstviya.",
 
-    "cta": "Стать Хранителем Мира",
+    "cta": "Stat Khranitelyem Mira",
 
-    "map_title": "🌐 Глобальное Присутствие в Реальном Времени",
-    "empty_map": "На карте пока нет зарегистрированных хранителей мира.",
+    "map_title": "Globalnoe Prisutstvie v Realnom Vremeni",
+    "empty_map": "Na karte poka net zaregistrirovannykh uchastnikov.",
 
-    "register_title": "Регистрация Хранителя Мира",
-    "register_intro": (
-        "Это простой и осознанный жест.<br>"
-        "Ваше имя может быть реальным или символическим. Электронная почта необязательна."
-    ),
-    "field_name": "Имя или псевдоним (необязательно)",
-    "field_email": "Электронная почта (необязательно)",
-    "field_city": "Город",
-    "field_country": "Страна",
-    "submit": "Зарегистрировать присутствие",
-    "success": "🌞 Ваше присутствие успешно зарегистрировано.",
-    "already_registered": "Это устройство уже имеет активную регистрацию."
+    "register_title": "Registraciya Khranitelya Mira",
+    "register_intro": "Eto prostoy i osoznannyy zhest.",
+
+    "field_name": "Imya ili psevdonim",
+    "field_email": "Elektronnaya pochta",
+    "field_city": "Gorod",
+    "field_country": "Strana",
+
+    "submit": "Zaregistrirovat prisutstvie",
+    "success": "Prisutstvie uspeshno zaregistrirovano.",
+    "already_registered": "Ustroystvo uzhe imeet aktivnuyu registraciyu.",
+
+    "credit": "Osnovano 1 dekabrya 2025 goda Jose Carlos Rosa Fariasom"
 }
-
-"credit": "Основано 1 декабря 2025 года Хосе Карлосом Роза Фариасом",

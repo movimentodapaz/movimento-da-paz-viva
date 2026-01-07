@@ -1,33 +1,31 @@
+# -*- coding: utf-8 -*-
+
 TEXTS = {
-    "lang_name": "Français",
+    "lang_name": "Francais",
 
     "nav_home": "Accueil",
     "nav_register": "Inscription",
     "nav_map": "Carte",
 
     "title": "Mouvement de la Paix Vivante",
-    "subtitle": (
-        "Un champ collectif de présence consciente.<br>"
-        "Des personnes réelles, partout dans le monde, soutenant la paix intérieure comme pratique vivante."
-    ),
+    "subtitle": "Un champ collectif de presence consciente.",
 
     "cta": "Devenir un Pacificateur",
 
-    "map_title": "🌐 Présence Globale en Temps Réel",
-    "empty_map": "Il n’y a encore aucun pacificateur enregistré sur la carte.",
+    "map_title": "Presence Globale en Temps Reel",
+    "empty_map": "Il n y a encore aucun pacificateur enregistre.",
 
     "register_title": "Inscription du Pacificateur",
-    "register_intro": (
-        "Ceci est un geste simple et conscient.<br>"
-        "Votre nom peut être réel ou symbolique. Votre e-mail est facultatif."
-    ),
-    "field_name": "Nom ou pseudonyme (facultatif)",
-    "field_email": "E-mail (facultatif)",
+    "register_intro": "Ceci est un geste simple et conscient.",
+
+    "field_name": "Nom ou pseudonyme",
+    "field_email": "Email",
     "field_city": "Ville",
     "field_country": "Pays",
-    "submit": "Enregistrer la présence",
-    "success": "🌞 Votre présence a été enregistrée avec succès.",
-    "already_registered": "Cet appareil dispose déjà d’une inscription active."
-}
 
-"credit": "Fondé le 1er décembre 2025 par José Carlos Rosa Farias",
+    "submit": "Enregistrer la presence",
+    "success": "Presence enregistree avec succes.",
+    "already_registered": "Cet appareil a deja une inscription active.",
+
+    "credit": "Fonde le 1 decembre 2025 par Jose Carlos Rosa Farias"
+}
