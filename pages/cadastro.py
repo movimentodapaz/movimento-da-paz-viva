@@ -1,16 +1,15 @@
 import streamlit as st
 import sqlite3
-import hashlib
+import uuid
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
+import streamlit.components.v1 as components
 
-# ---------- IDIOMAS ----------
-lang = st.session_state.get("lang", "pt")
+# ---------- IDIOMA ----------
 T = st.session_state.get("texts")
-
 if T is None:
-    st.error("Idioma não carregado corretamente.")
+    st.error("Idioma não carregado.")
     st.stop()
 
 st.set_page_config(
@@ -18,6 +17,26 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+# ---------- COOKIE DEVICE ID ----------
+components.html(
+    """
+    <script>
+    if (!document.cookie.includes("pacificador_id")) {
+        const id = crypto.randomUUID();
+        document.cookie = "pacificador_id=" + id + "; path=/; max-age=31536000";
+    }
+    </script>
+    """,
+    height=0
+)
+
+# recupera cookie
+device_id = st.experimental_get_query_params().get("pacificador_id", [None])[0]
+
+# fallback JS (segurança)
+if not device_id:
+    device_id = str(uuid.uuid4())
 
 # ---------- PATH BANCO ----------
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,21 +63,8 @@ def get_conn():
     conn.commit()
     return conn
 
-# ---------- DEVICE ID ----------
-def get_device_id():
-    raw = (
-        st.session_state.get("browser", "")
-        + st.session_state.get("lang", "")
-        + str(st.session_state.get("_session_id", ""))
-    )
-    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
-
-device_id = get_device_id()
-
-# ---------- GEO (SIMPLES E SEGURA) ----------
-# OBS: mantém o comportamento atual do seu projeto
+# ---------- GEO (TEMPORÁRIO) ----------
 def geocode_stub(cidade, pais):
-    # Coordenadas aproximadas por país (fallback consciente)
     if pais.lower() == "brasil":
         return -14.2350, -51.9253
     return 0.0, 0.0
@@ -89,7 +95,6 @@ if st.button(T["submit"], use_container_width=True):
         existe = cur.fetchone()
 
         if existe:
-            # ---------- UPDATE ----------
             cur.execute("""
                 UPDATE pacificadores
                 SET nome = ?, email = ?, cidade = ?, pais = ?,
@@ -102,7 +107,6 @@ if st.button(T["submit"], use_container_width=True):
             conn.commit()
             st.success("🌞 Sua presença foi atualizada com sucesso.")
         else:
-            # ---------- INSERT ----------
             cur.execute("""
                 INSERT INTO pacificadores
                 (nome, email, cidade, pais, latitude, longitude, device_id, data_registro)
@@ -118,6 +122,5 @@ if st.button(T["submit"], use_container_width=True):
 
 st.divider()
 
-# ---------- VOLTAR ----------
 if st.button("⬅️ Home", use_container_width=True):
     st.switch_page("streamlit_app.py")
