@@ -39,7 +39,6 @@ def get_conn():
 
 def render_mapa():
     conn = get_conn()
-
     df = pd.read_sql("SELECT * FROM pacificadores", conn)
 
     if df.empty:
@@ -67,7 +66,8 @@ def render_mapa():
         lon="lon_plot",
         hover_name="cidade",
         zoom=1,
-        height=600
+        height=600,
+        color_discrete_sequence=["#FFD700"]  # 🌞 AMARELO DOURADO (SOL)
     )
 
     fig.update_layout(
