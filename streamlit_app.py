@@ -4,28 +4,68 @@ import streamlit.components.v1 as components
 import base64
 from pathlib import Path
 
+from locales import pt, en
+
+
 st.set_page_config(
-    page_title="Movimento da Paz Viva",
+    page_title="Home",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# ---------- RESOLUÇÃO SEGURA DE PATH ----------
+# ---------- CSS: ESCONDE MENU E HEADER PADRÃO ----------
+st.markdown("""
+<style>
+[data-testid="stSidebar"] {
+    display: none;
+}
+[data-testid="stHeader"] {
+    visibility: hidden;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ---------- SELETOR DE IDIOMA ----------
+LANGS = {
+    "pt": pt.TEXTS,
+    "en": en.TEXTS,
+}
+
+lang = st.selectbox(
+    "🌐 Language / Idioma",
+    options=list(LANGS.keys()),
+    format_func=lambda x: LANGS[x]["lang_name"],
+    index=0
+)
+
+T = LANGS[lang]
+
+# ---------- LOGO EM BASE64 ----------
 BASE_DIR = Path(__file__).resolve().parent
 logo_path = BASE_DIR / "assets" / "logo_paz.png"
 
-if not logo_path.exists():
-    st.error(f"Logo não encontrado em: {logo_path}")
-    st.stop()
-
-# ---------- CARREGA LOGO EM BASE64 ----------
 with open(logo_path, "rb") as f:
     logo_base64 = base64.b64encode(f.read()).decode("utf-8")
 
-# ---------- TOPO EM 3 COLUNAS ----------
+# ---------- NAVEGAÇÃO POR BOTÕES ----------
+nav1, nav2, nav3 = st.columns(3)
+
+with nav1:
+    st.button(f"🏠 {T['nav_home']}", use_container_width=True)
+
+with nav2:
+    if st.button(f"📝 {T['nav_register']}", use_container_width=True):
+        st.switch_page("pages/cadastro.py")
+
+with nav3:
+    if st.button(f"🌍 {T['nav_map']}", use_container_width=True):
+        st.switch_page("pages/pacificadores.py")
+
+st.divider()
+
+# ---------- TOPO ----------
 col1, col2, col3 = st.columns([1.2, 3.6, 1.2])
 
-# COLUNA 1 — LOGO ANIMADO NATIVO
 with col1:
     components.html(
         f"""
@@ -40,23 +80,15 @@ with col1:
             align-items: center;
             background: transparent;
         }}
-
         img {{
             width: 130px;
             animation: respirar 12s ease-in-out infinite;
             opacity: 0.95;
         }}
-
         @keyframes respirar {{
-            0% {{
-                transform: rotate(0deg) scale(0.95);
-            }}
-            50% {{
-                transform: rotate(180deg) scale(1.05);
-            }}
-            100% {{
-                transform: rotate(360deg) scale(0.95);
-            }}
+            0% {{ transform: rotate(0deg) scale(0.95); }}
+            50% {{ transform: rotate(180deg) scale(1.05); }}
+            100% {{ transform: rotate(360deg) scale(0.95); }}
         }}
         </style>
         </head>
@@ -68,26 +100,26 @@ with col1:
         height=220,
     )
 
-# COLUNA 2 — TÍTULO E TEXTO
 with col2:
-    st.markdown("""
-    <h1 style="text-align:center; margin-top:40px">
-        Movimento da Paz Viva
-    </h1>
-    <p style="text-align:center; font-size:18px; max-width:900px; margin:auto">
-        Um campo coletivo de presença consciente.<br>
-        Pessoas reais, espalhadas pelo mundo, sustentando a paz interior como prática viva.
-    </p>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <h1 style="text-align:center; margin-top:40px">
+            {T["title"]}
+        </h1>
+        <p style="text-align:center; font-size:18px; max-width:900px; margin:auto">
+            {T["subtitle"]}
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
 
-# COLUNA 3 — BOTÃO
 with col3:
     st.markdown("<div style='height:70px'></div>", unsafe_allow_html=True)
-    if st.button("🌍 Tornar-me um Pacificador", use_container_width=True):
+    if st.button(f"🌍 {T['cta']}", use_container_width=True):
         st.switch_page("pages/cadastro.py")
 
 st.divider()
 
 # ---------- MAPA ----------
-st.markdown("## 🌐 Presença Global em Tempo Real")
+st.markdown(f"## {T['map_title']}")
 render_mapa()

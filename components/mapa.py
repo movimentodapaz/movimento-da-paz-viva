@@ -14,8 +14,6 @@ LANGS = {
     "en": en.TEXTS,
 }
 
-# Se idioma já estiver na sessão (vindo da Home), usa.
-# Caso contrário, assume português.
 lang = st.session_state.get("lang", "pt")
 T = LANGS.get(lang, pt.TEXTS)
 
@@ -55,9 +53,6 @@ def render_mapa():
     conn = get_conn()
     df = pd.read_sql("SELECT * FROM pacificadores", conn)
 
-    # ---------- TÍTULO DO MAPA (I18N) ----------
-    st.markdown(f"## {T['map_title']}")
-
     if df.empty:
         st.info(T["empty_map"])
         return
@@ -72,11 +67,10 @@ def render_mapa():
     col2.metric("🇧🇷 Brasil", brasil)
     col3.metric("🌎 Exterior", exterior)
 
-    # ---------- JITTER PARA PRIVACIDADE ----------
+    # ---------- JITTER ----------
     lat_plot = df["latitude"] + np.random.randn(len(df)) * 0.01
     lon_plot = df["longitude"] + np.random.randn(len(df)) * 0.01
 
-    # ---------- MAPA (COR SOLAR FIXA) ----------
     fig = go.Figure(
         go.Scattermapbox(
             lat=lat_plot,
@@ -84,7 +78,7 @@ def render_mapa():
             mode="markers",
             marker=dict(
                 size=10,
-                color=["#FFD700"] * len(lat_plot),  # 🌞 dourado solar
+                color=["#FFD700"] * len(lat_plot),
                 opacity=0.9
             ),
             text=df["cidade"],
