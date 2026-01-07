@@ -6,8 +6,8 @@ import streamlit.components.v1 as components
 import base64
 from pathlib import Path
 
-# Idiomas ATIVOS e ESTÁVEIS
-from locales import pt, en, es
+# ---------- IDIOMAS (EXPLÍCITOS E ESTÁVEIS) ----------
+from locales import pt, en, es, fr, ru, zh, ar
 
 
 st.set_page_config(
@@ -24,14 +24,18 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- LANGUAGES (COERENTE COM LOCALES) ----------
+# ---------- LANGUAGES ----------
 LANGS = {
     "pt": pt.TEXTS,
     "en": en.TEXTS,
     "es": es.TEXTS,
+    "fr": fr.TEXTS,
+    "ru": ru.TEXTS,
+    "zh": zh.TEXTS,
+    "ar": ar.TEXTS,
 }
 
-LANG_ORDER = ["pt", "en", "es"]
+LANG_ORDER = ["pt", "en", "es", "fr", "ru", "zh", "ar"]
 
 # ---------- ACTIVE LANGUAGE ----------
 if "lang" not in st.session_state or st.session_state["lang"] not in LANGS:
