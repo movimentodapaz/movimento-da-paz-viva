@@ -27,5 +27,5 @@ TEXTS = {
     "success": "Presenca registrada com sucesso.",
     "already_registered": "Este dispositivo ja possui cadastro.",
 
-    "credit": "Fundado em 1 de Dezembro de 2025 por Jose Carlos Rosa Farias"
+    "credit": "Fundado no Brasil em 1º de Dezembro de 2025 por Jose Carlos Rosa Farias"
 }
