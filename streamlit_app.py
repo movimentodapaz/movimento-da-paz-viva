@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 import base64
 from pathlib import Path
 
-from locales import pt, en
+from locales import pt, en, es 
 
 st.set_page_config(
     page_title="Movimento da Paz Viva",
@@ -26,6 +26,7 @@ st.markdown("""
 LANGS = {
     "pt": pt.TEXTS,
     "en": en.TEXTS,
+    "es": es.TEXTS,
 }
 
 # ---------- IDIOMA ATIVO ----------
@@ -34,8 +35,8 @@ if "lang" not in st.session_state:
 
 lang = st.selectbox(
     "🌐 Language / Idioma",
-    options=list(LANGS.keys()),
-    index=list(LANGS.keys()).index(st.session_state["lang"]),
+    options=["pt", "en", "es"],
+    index=["pt", "en", "es"].index(st.session_state["lang"]),
     format_func=lambda x: LANGS[x]["lang_name"]
 )
 
