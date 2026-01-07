@@ -1,36 +1,31 @@
-TEXTS = {
-    "lang_name": "Português",
+# -*- coding: utf-8 -*-
 
-    # Navegação
+TEXTS = {
+    "lang_name": "Portugues",
+
     "nav_home": "Home",
     "nav_register": "Cadastro",
     "nav_map": "Mapa",
 
-    # Home
     "title": "Movimento da Paz Viva",
-    "subtitle": (
-        "Um campo coletivo de presença consciente.<br>"
-        "Pessoas reais, espalhadas pelo mundo, sustentando a paz interior como prática viva."
-    ),
+    "subtitle": "Um campo coletivo de presenca consciente.",
+
     "cta": "Tornar-me um Pacificador",
 
-    # Mapa
-    "map_title": "🌐 Presença Global em Tempo Real",
-    "empty_map": "Ainda não há pacificadores registrados no mapa.",
+    "map_title": "Presenca Global em Tempo Real",
+    "empty_map": "Ainda nao ha pacificadores registrados.",
 
-    # Cadastro
     "register_title": "Cadastro de Pacificador",
-    "register_intro": (
-        "Este é um gesto simples e consciente.<br>"
-        "Seu nome pode ser real ou simbólico. Seu e-mail é opcional."
-    ),
-    "field_name": "Nome ou apelido (opcional)",
-    "field_email": "E-mail (opcional)",
-    "field_city": "Cidade",
-    "field_country": "País",
-    "submit": "Registrar presença",
-    "success": "🌞 Sua presença foi registrada com sucesso.",
-    "already_registered": "Este dispositivo já possui um cadastro ativo."
-}
+    "register_intro": "Este e um gesto simples e consciente.",
 
-"credit": "Fundado em 1º de Dezembro de 2025 por José Carlos Rosa Farias",
+    "field_name": "Nome ou apelido",
+    "field_email": "Email",
+    "field_city": "Cidade",
+    "field_country": "Pais",
+
+    "submit": "Registrar presenca",
+    "success": "Presenca registrada com sucesso.",
+    "already_registered": "Este dispositivo ja possui cadastro.",
+
+    "credit": "Fundado em 1 de Dezembro de 2025 por Jose Carlos Rosa Farias"
+}
