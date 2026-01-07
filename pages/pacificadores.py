@@ -1,5 +1,6 @@
 import streamlit as st
 import sqlite3
+import base64
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -18,6 +19,72 @@ T = st.session_state.get("texts", {
     "empty_map": "Nenhum pacificador registrado."
 })
 
+# ---------- LOGO ----------
+BASE_DIR = Path(__file__).resolve().parent
+logo_path = BASE_DIR / "assets" / "logo_paz.png"
+
+logo_base64 = ""
+if logo_path.exists():
+    with open(logo_path, "rb") as f:
+        logo_base64 = base64.b64encode(f.read()).decode("utf-8")
+
+# ---------- NAVEGAÇÃO ----------
+nav1, nav2, nav3 = st.columns(3)
+
+with nav1:
+    st.button(f"🏠 {T['nav_home']}", use_container_width=True)
+
+with nav2:
+    if st.button(f"📝 {T['nav_register']}", use_container_width=True):
+        st.switch_page("pages/cadastro.py")
+
+with nav3:
+    if st.button(f"🌍 {T['nav_map']}", use_container_width=True):
+        st.switch_page("pages/pacificadores.py")
+
+st.divider()
+
+# ---------- TOPO ----------
+col1, col2, col3 = st.columns([1.2, 3.6, 1.2])
+
+with col1:
+    if logo_base64:
+        components.html(
+            f"""
+            <html>
+            <body style="margin:0;height:220px;display:flex;align-items:center;justify-content:center;">
+                <img src="data:image/png;base64,{logo_base64}"
+                     style="width:130px;animation:spin 4s ease-in-out infinite;">
+                <style>
+                @keyframes spin {{
+                    0% {{ transform: rotate(0deg) scale(0.95); }}
+                    
+                    100% {{ transform: rotate(360deg) scale(0.95); }}
+                }}
+                </style>
+            </body>
+            </html>
+            """,
+            height=220
+        )
+
+with col2:
+    st.markdown(
+        f"""
+        <h1 style="text-align:center">{T['title']}</h1>
+        <p style="text-align:center;font-size:18px;max-width:900px;margin:auto">
+            {T['subtitle']}
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col3:
+    st.markdown("<div style='height:70px'></div>", unsafe_allow_html=True)
+    if st.button(f"🌍 {T['cta']}", use_container_width=True):
+        st.switch_page("pages/cadastro.py")
+
+st.divider()
 # ---------- PATH BANCO ----------
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
