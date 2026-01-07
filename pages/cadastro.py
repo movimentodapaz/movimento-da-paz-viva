@@ -1,6 +1,5 @@
 import streamlit as st
 import sqlite3
-import hashlib
 import requests
 from pathlib import Path
 from datetime import datetime
@@ -35,21 +34,11 @@ def get_conn():
             pais TEXT,
             latitude REAL,
             longitude REAL,
-            device_id TEXT UNIQUE,
             data_registro TEXT
         )
     """)
     conn.commit()
     return conn
-
-# ---------- DEVICE ID (PERSISTENTE REAL) ----------
-def get_device_id():
-    ua = st.request.headers.get("User-Agent", "")
-    ip = st.request.headers.get("X-Forwarded-For", "")
-    raw = ua + ip
-    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
-
-device_id = get_device_id()
 
 # ---------- GEOCODIFICAÇÃO REAL ----------
 def geocode_city(cidade, pais):
@@ -83,44 +72,48 @@ if st.button(T["submit"], use_container_width=True):
         st.warning("Cidade e país são obrigatórios.")
     else:
         lat, lon = geocode_city(cidade, pais)
-
         if lat is None or lon is None:
             st.error("Não foi possível localizar a cidade informada.")
             st.stop()
 
         agora = datetime.utcnow().isoformat()
-
         conn = get_conn()
         cur = conn.cursor()
 
-        cur.execute(
-            "SELECT id FROM pacificadores WHERE device_id = ?",
-            (device_id,)
-        )
+        # ---------- CRITÉRIO DE ATUALIZAÇÃO ----------
+        if email:
+            cur.execute(
+                "SELECT id FROM pacificadores WHERE email = ?",
+                (email,)
+            )
+        else:
+            cur.execute(
+                "SELECT id FROM pacificadores WHERE nome = ? AND cidade = ? AND pais = ?",
+                (nome, cidade, pais)
+            )
+
         existe = cur.fetchone()
 
         if existe:
-            # UPDATE
             cur.execute("""
                 UPDATE pacificadores
                 SET nome = ?, email = ?, cidade = ?, pais = ?,
                     latitude = ?, longitude = ?, data_registro = ?
-                WHERE device_id = ?
+                WHERE id = ?
             """, (
                 nome, email, cidade, pais,
-                lat, lon, agora, device_id
+                lat, lon, agora, existe[0]
             ))
             conn.commit()
             st.success("🌞 Sua presença foi atualizada com sucesso.")
         else:
-            # INSERT
             cur.execute("""
                 INSERT INTO pacificadores
-                (nome, email, cidade, pais, latitude, longitude, device_id, data_registro)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                (nome, email, cidade, pais, latitude, longitude, data_registro)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 nome, email, cidade, pais,
-                lat, lon, device_id, agora
+                lat, lon, agora
             ))
             conn.commit()
             st.success(T["success"])
