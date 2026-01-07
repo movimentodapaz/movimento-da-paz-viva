@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 TEXTS = {
     "lang_name": "繁體中文",
 
@@ -27,7 +29,7 @@ TEXTS = {
     "field_country": "國家",
     "submit": "登記臨在",
     "success": "🌞 您的臨在已成功登記。",
-    "already_registered": "此裝置已經有一筆有效的登記。"
-}
+    "already_registered": "此裝置已經有一筆有效的登記。",
 
-"credit": "於 2025 年 12 月 1 日由 José Carlos Rosa Farias 創立",
+    "credit": "於 2025 年 12 月 1 日由 José Carlos Rosa Farias 創立"
+}
