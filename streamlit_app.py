@@ -6,8 +6,7 @@ import streamlit.components.v1 as components
 import base64
 from pathlib import Path
 
-from locales import pt
-
+from locales import pt, en
 
 st.set_page_config(
     page_title="Movimento da Paz Viva",
@@ -26,6 +25,7 @@ st.markdown("""
 # ---------- IDIOMAS (EXPLÍCITO E SEGURO) ----------
 LANGS = {
     "pt": pt.TEXTS,
+    "en
 }
 
 # ---------- IDIOMA ATIVO ----------
