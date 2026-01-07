@@ -41,7 +41,7 @@ def render_mapa():
         st.warning("Não há coordenadas válidas para exibir.")
         return
 
-    # jitter mínimo
+    # jitter mínimo (privacidade sem deslocamento)
     jitter = 0.001
     lat = df["latitude"] + np.random.uniform(-jitter, jitter, len(df))
     lon = df["longitude"] + np.random.uniform(-jitter, jitter, len(df))
@@ -71,4 +71,5 @@ def render_mapa():
         height=600
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    # ✅ SCROLL DO MOUSE HABILITADO AQUI
+    st.plotly_chart(fig, use_container_width=True, config={"scrollZoom": True})

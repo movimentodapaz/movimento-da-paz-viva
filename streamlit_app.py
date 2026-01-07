@@ -7,7 +7,6 @@ import base64
 from pathlib import Path
 import importlib
 
-
 st.set_page_config(
     page_title="Movimento da Paz Viva",
     layout="wide",
@@ -31,12 +30,10 @@ for code in LANG_CODES:
         module = importlib.import_module(f"locales.{code}")
         LANGS[code] = module.TEXTS
     except Exception:
-        # idioma inválido é simplesmente ignorado
         pass
 
-# fallback absoluto
 if "pt" not in LANGS:
-    st.error("Idioma base (pt) não disponível. Verifique locales/pt.py.")
+    st.error("Idioma base não disponível.")
     st.stop()
 
 LANG_ORDER = list(LANGS.keys())
@@ -56,7 +53,6 @@ st.session_state["lang"] = lang
 T = LANGS[lang]
 st.session_state["texts"] = T
 
-
 # ---------- LOGO ----------
 BASE_DIR = Path(__file__).resolve().parent
 logo_path = BASE_DIR / "assets" / "logo_paz.png"
@@ -66,8 +62,7 @@ if logo_path.exists():
     with open(logo_path, "rb") as f:
         logo_base64 = base64.b64encode(f.read()).decode("utf-8")
 
-
-# ---------- NAVIGATION ----------
+# ---------- NAVEGAÇÃO ----------
 nav1, nav2, nav3 = st.columns(3)
 
 with nav1:
@@ -83,8 +78,7 @@ with nav3:
 
 st.divider()
 
-
-# ---------- HEADER ----------
+# ---------- TOPO ----------
 col1, col2, col3 = st.columns([1.2, 3.6, 1.2])
 
 with col1:
@@ -126,15 +120,12 @@ with col3:
 
 st.divider()
 
-
-# ---------- MAP ----------
-st.markdown(f"## {T['map_title']}")
+# ---------- MAPA (SEM TÍTULO AQUI) ----------
 render_mapa()
 
 st.divider()
 
-
-# ---------- CREDIT ----------
+# ---------- CRÉDITO ----------
 st.markdown(
     f"""
     <p style="text-align:center; font-size:14px; opacity:0.7; margin-top:40px">
