@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 import base64
 from pathlib import Path
 
-from locales import pt, en, es, fr, ru, zh, ar
+from locales import pt
 
 
 st.set_page_config(
@@ -26,12 +26,6 @@ st.markdown("""
 # ---------- IDIOMAS (EXPLÍCITO E SEGURO) ----------
 LANGS = {
     "pt": pt.TEXTS,
-    "en": en.TEXTS,
-    "es": es.TEXTS,
-    "fr": fr.TEXTS,
-    "ru": ru.TEXTS,
-    "zh": zh.TEXTS,
-    "ar": ar.TEXTS,
 }
 
 # ---------- IDIOMA ATIVO ----------
