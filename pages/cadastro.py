@@ -1,6 +1,7 @@
 import streamlit as st
 import sqlite3
-import uuid
+import hashlib
+import requests
 from pathlib import Path
 from datetime import datetime
 
@@ -15,12 +16,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
-
-# ---------- DEVICE ID (ESTÁVEL E SIMPLES) ----------
-if "device_id" not in st.session_state:
-    st.session_state["device_id"] = str(uuid.uuid4())
-
-device_id = st.session_state["device_id"]
 
 # ---------- PATH BANCO ----------
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,11 +42,32 @@ def get_conn():
     conn.commit()
     return conn
 
-# ---------- GEO (TEMPORÁRIO) ----------
-def geocode_stub(cidade, pais):
-    if pais.lower() == "brasil":
-        return -14.2350, -51.9253
-    return 0.0, 0.0
+# ---------- DEVICE ID (PERSISTENTE REAL) ----------
+def get_device_id():
+    ua = st.request.headers.get("User-Agent", "")
+    ip = st.request.headers.get("X-Forwarded-For", "")
+    raw = ua + ip
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+device_id = get_device_id()
+
+# ---------- GEOCODIFICAÇÃO REAL ----------
+def geocode_city(cidade, pais):
+    try:
+        url = "https://nominatim.openstreetmap.org/search"
+        params = {
+            "q": f"{cidade}, {pais}",
+            "format": "json",
+            "limit": 1
+        }
+        headers = {"User-Agent": "MovimentoPazViva/1.0"}
+        r = requests.get(url, params=params, headers=headers, timeout=10)
+        data = r.json()
+        if data:
+            return float(data[0]["lat"]), float(data[0]["lon"])
+    except Exception:
+        pass
+    return None, None
 
 # ---------- UI ----------
 st.markdown(f"## {T['register_title']}")
@@ -66,7 +82,12 @@ if st.button(T["submit"], use_container_width=True):
     if not cidade or not pais:
         st.warning("Cidade e país são obrigatórios.")
     else:
-        lat, lon = geocode_stub(cidade, pais)
+        lat, lon = geocode_city(cidade, pais)
+
+        if lat is None or lon is None:
+            st.error("Não foi possível localizar a cidade informada.")
+            st.stop()
+
         agora = datetime.utcnow().isoformat()
 
         conn = get_conn()
@@ -79,6 +100,7 @@ if st.button(T["submit"], use_container_width=True):
         existe = cur.fetchone()
 
         if existe:
+            # UPDATE
             cur.execute("""
                 UPDATE pacificadores
                 SET nome = ?, email = ?, cidade = ?, pais = ?,
@@ -91,6 +113,7 @@ if st.button(T["submit"], use_container_width=True):
             conn.commit()
             st.success("🌞 Sua presença foi atualizada com sucesso.")
         else:
+            # INSERT
             cur.execute("""
                 INSERT INTO pacificadores
                 (nome, email, cidade, pais, latitude, longitude, device_id, data_registro)
