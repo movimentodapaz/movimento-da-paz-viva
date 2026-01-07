@@ -5,9 +5,7 @@ from components.mapa import render_mapa
 import streamlit.components.v1 as components
 import base64
 from pathlib import Path
-
-# ---------- IDIOMAS (EXPLÍCITOS E ESTÁVEIS) ----------
-from locales import pt, en, es, fr, ru, zh, ar
+import importlib
 
 
 st.set_page_config(
@@ -24,20 +22,26 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- LANGUAGES ----------
-LANGS = {
-    "pt": pt.TEXTS,
-    "en": en.TEXTS,
-    "es": es.TEXTS,
-    "fr": fr.TEXTS,
-    "ru": ru.TEXTS,
-    "zh": zh.TEXTS,
-    "ar": ar.TEXTS,
-}
+# ---------- IDIOMAS (IMPORTAÇÃO SEGURA) ----------
+LANG_CODES = ["pt", "en", "es", "fr", "ru", "zh", "ar"]
+LANGS = {}
 
-LANG_ORDER = ["pt", "en", "es", "fr", "ru", "zh", "ar"]
+for code in LANG_CODES:
+    try:
+        module = importlib.import_module(f"locales.{code}")
+        LANGS[code] = module.TEXTS
+    except Exception:
+        # idioma inválido é simplesmente ignorado
+        pass
 
-# ---------- ACTIVE LANGUAGE ----------
+# fallback absoluto
+if "pt" not in LANGS:
+    st.error("Idioma base (pt) não disponível. Verifique locales/pt.py.")
+    st.stop()
+
+LANG_ORDER = list(LANGS.keys())
+
+# ---------- IDIOMA ATIVO ----------
 if "lang" not in st.session_state or st.session_state["lang"] not in LANGS:
     st.session_state["lang"] = "pt"
 
@@ -50,8 +54,6 @@ lang = st.selectbox(
 
 st.session_state["lang"] = lang
 T = LANGS[lang]
-
-# disponibiliza textos globalmente (mapa + cadastro)
 st.session_state["texts"] = T
 
 
