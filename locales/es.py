@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 TEXTS = {
     "lang_name": "Español",
 
@@ -27,7 +29,7 @@ TEXTS = {
     "field_country": "País",
     "submit": "Registrar presencia",
     "success": "🌞 Tu presencia ha sido registrada con éxito.",
-    "already_registered": "Este dispositivo ya tiene un registro activo."
-}
+    "already_registered": "Este dispositivo ya tiene un registro activo.",
 
-"credit": "Fundado el 1 de diciembre de 2025 por José Carlos Rosa Farias",
+    "credit": "Fundado el 1 de diciembre de 2025 por José Carlos Rosa Farias"
+}
