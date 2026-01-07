@@ -88,12 +88,12 @@ with col1:
             <html>
             <body style="margin:0;height:220px;display:flex;align-items:center;justify-content:center;">
                 <img src="data:image/png;base64,{logo_base64}"
-                     style="width:130px;animation:spin 9s ease-in-out infinite;">
+                     style="width:130px;animation:spin 4s ease-in-out infinite;">
                 <style>
                 @keyframes spin {{
                     0% {{ transform: rotate(0deg) scale(0.95); }}
                     
-                    100% {{ transform: rotate(360deg) scale(0.95); }}
+                    300% {{ transform: rotate(360deg) scale(0.95); }}
                 }}
                 </style>
             </body>
