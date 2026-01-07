@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import streamlit as st
 import sqlite3
 import pandas as pd
@@ -7,81 +5,59 @@ import numpy as np
 from pathlib import Path
 import plotly.graph_objects as go
 
-from locales import pt, en, es, fr, zh, ru, ar
+# ---------- IDIOMA (SEGURO) ----------
+T = st.session_state.get("texts", {
+    "map_title": "Mapa",
+    "empty_map": "Nenhum registro encontrado."
+})
 
-
-# ---------- IDIOMAS ----------
-LANGS = {
-    "pt": pt.TEXTS,
-    "en": en.TEXTS,
-    "es": es.TEXTS,
-    "fr": fr.TEXTS,
-    "zh": zh.TEXTS,
-    "ru": ru.TEXTS,
-    "ar": ar.TEXTS,
-}
-
-lang = st.session_state.get("lang", "pt")
-T = LANGS.get(lang, pt.TEXTS)
-
-
-# ---------- PATH DO BANCO ----------
+# ---------- PATH BANCO ----------
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 DB_PATH = DATA_DIR / "pacificadores.db"
 
-
 def get_conn():
     DATA_DIR.mkdir(exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS pacificadores (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            email TEXT,
-            cidade TEXT,
-            pais TEXT,
-            latitude REAL,
-            longitude REAL,
-            device_id TEXT UNIQUE,
-            data_registro TEXT
-        )
-    """)
-    conn.commit()
     return conn
 
-
+# ---------- FUNÇÃO PÚBLICA ----------
 def render_mapa():
-    df = pd.read_sql("SELECT * FROM pacificadores", get_conn())
+    st.markdown(f"## {T.get('map_title')}")
 
-    if df.empty:
-        st.info(T["empty_map"])
+    try:
+        df = pd.read_sql("SELECT * FROM pacificadores", get_conn())
+    except Exception as e:
+        st.error("Erro ao acessar o banco de dados.")
         return
 
-    # ---------- CONTADORES ----------
-    total = len(df)
-    brasil = len(df[df["pais"].str.lower() == "brasil"])
-    exterior = total - brasil
+    if df.empty:
+        st.info(T.get("empty_map"))
+        return
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("🌍 Total", total)
-    c2.metric("🇧🇷 Brasil", brasil)
-    c3.metric("🌎 Exterior", exterior)
+    # valida coordenadas
+    df = df[
+        df["latitude"].between(-90, 90) &
+        df["longitude"].between(-180, 180)
+    ]
 
-    # ---------- JITTER ----------
-    lat_plot = df["latitude"] + np.random.randn(len(df)) * 0.01
-    lon_plot = df["longitude"] + np.random.randn(len(df)) * 0.01
+    if df.empty:
+        st.warning("Não há coordenadas válidas para exibir.")
+        return
 
-    # ---------- MAPA ----------
+    # jitter mínimo
+    jitter = 0.001
+    lat = df["latitude"] + np.random.uniform(-jitter, jitter, len(df))
+    lon = df["longitude"] + np.random.uniform(-jitter, jitter, len(df))
+
     fig = go.Figure(
         go.Scattermapbox(
-            lat=lat_plot,
-            lon=lon_plot,
+            lat=lat,
+            lon=lon,
             mode="markers",
             marker=dict(
                 size=10,
-                color=["#FFD700"] * len(lat_plot),  # dourado solar
+                color="#FFD700",
                 opacity=0.9
             ),
             text=df["cidade"],
@@ -95,7 +71,7 @@ def render_mapa():
             center=dict(lat=0, lon=0),
             zoom=1
         ),
-        margin={"r": 0, "t": 0, "l": 0, "b": 0},
+        margin=dict(r=0, t=0, l=0, b=0),
         height=600
     )
 
