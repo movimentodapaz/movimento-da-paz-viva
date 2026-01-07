@@ -59,7 +59,7 @@ def render_mapa():
     lat_plot = df["latitude"] + np.random.randn(len(df)) * 0.01
     lon_plot = df["longitude"] + np.random.randn(len(df)) * 0.01
 
-    # ---------- MAPA COM CONTROLE TOTAL ----------
+    # ---------- MAPA COM COR SOLAR FIXA ----------
     fig = go.Figure(
         go.Scattermapbox(
             lat=lat_plot,
@@ -67,7 +67,7 @@ def render_mapa():
             mode="markers",
             marker=dict(
                 size=10,
-                color="#FFD700",   # 🌞 AMARELO DOURADO SOLAR
+                color=["#FFD700"] * len(lat_plot),  # 🌞 dourado solar (desktop + mobile)
                 opacity=0.9
             ),
             text=df["cidade"],
