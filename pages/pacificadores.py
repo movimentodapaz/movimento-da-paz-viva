@@ -1,144 +1,103 @@
 import streamlit as st
-import pandas as pd
 import sqlite3
-import plotly.express as px
+import pandas as pd
+import numpy as np
 from pathlib import Path
-import random
+import plotly.graph_objects as go
 
-# =====================
-# CONFIGURAÇÃO DA PÁGINA
-# =====================
+from locales import pt, en, es, fr, zh, ru, ar
+
+
 st.set_page_config(
-    page_title="Mapa dos Pacificadores – Movimento da Paz Viva",
-    layout="wide"
+    page_title="Mapa",
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-# =====================
-# CAMINHO DO BANCO
-# =====================
-DB_PATH = Path("data/pacificadores.db")
+# ---------- IDIOMAS ----------
+LANGS = {
+    "pt": pt.TEXTS,
+    "en": en.TEXTS,
+    "es": es.TEXTS,
+    "fr": fr.TEXTS,
+    "zh": zh.TEXTS,
+    "ru": ru.TEXTS,
+    "ar": ar.TEXTS,
+}
 
-# =====================
-# CONEXÃO COM BANCO
-# =====================
+lang = st.session_state.get("lang", "pt")
+T = LANGS.get(lang, pt.TEXTS)
+
+# ---------- PATH BANCO ----------
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+DB_PATH = DATA_DIR / "pacificadores.db"
+
 def get_conn():
-    return sqlite3.connect(DB_PATH)
+    DATA_DIR.mkdir(exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS pacificadores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            email TEXT,
+            cidade TEXT,
+            pais TEXT,
+            latitude REAL,
+            longitude REAL,
+            device_id TEXT UNIQUE,
+            data_registro TEXT
+        )
+    """)
+    conn.commit()
+    return conn
 
-def load_data():
-    conn = get_conn()
-    df = pd.read_sql("SELECT * FROM pacificadores", conn)
-    conn.close()
-    return df
+# ---------- CONTEÚDO ----------
+st.markdown(f"## {T['map_title']}")
 
-df = load_data()
+df = pd.read_sql("SELECT * FROM pacificadores", get_conn())
 
-# =====================
-# CONTADORES (ROBUSTOS)
-# =====================
-total = len(df)
-
-def is_brasil(pais):
-    if not isinstance(pais, str):
-        return False
-    pais = pais.lower()
-    return any(x in pais for x in ["brasil", "brazil", "br"])
-
-brasil = df["pais"].apply(is_brasil).sum() if not df.empty else 0
-exterior = total - brasil
-
-# =====================
-# HEADER
-# =====================
-st.markdown(
-    "<h1 style='margin-top:-50px'>🌍 Mapa dos Pacificadores da Paz Viva</h1>",
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    """
-    <p style="font-size:16px; max-width:900px;">
-    O <strong>Movimento da Paz Viva</strong> é uma iniciativa independente e global.
-    Cada ponto neste mapa representa uma pessoa real que escolheu sustentar a paz interior
-    como prática consciente, contribuindo silenciosamente para a transformação coletiva.
-    </p>
-    """,
-    unsafe_allow_html=True
-)
-
-col1, col2, col3 = st.columns(3)
-col1.metric("🌍 Pacificadores", total)
-col2.metric("🇧🇷 Brasil", brasil)
-col3.metric("🌐 Exterior", exterior)
-
-st.divider()
-
-# =====================
-# FUNÇÃO DE ESPALHAMENTO (JITTER)
-# =====================
-def jitter(lat, lon, radius_m=1500):
-    r = radius_m / 111_000
-    return (
-        lat + random.uniform(-r, r),
-        lon + random.uniform(-r, r)
-    )
-
-# =====================
-# MAPA
-# =====================
 if df.empty:
-    st.info("Ainda não há pacificadores registrados.")
+    st.info(T["empty_map"])
 else:
-    # Aplica espalhamento visual
-    df["lat_plot"], df["lon_plot"] = zip(*df.apply(
-        lambda r: jitter(r.latitude, r.longitude),
-        axis=1
-    ))
+    total = len(df)
+    brasil = len(df[df["pais"].str.lower() == "brasil"])
+    exterior = total - brasil
 
-    fig = px.density_mapbox(
-        df,
-        lat="lat_plot",
-        lon="lon_plot",
-        radius=12,
-        center=dict(lat=-14.2, lon=-51.9),
-        zoom=1.4,
-        mapbox_style="open-street-map",  # visual mais Google Maps-like
-        opacity=0.85
-    )
+    c1, c2, c3 = st.columns(3)
+    c1.metric("🌍 Total", total)
+    c2.metric("🇧🇷 Brasil", brasil)
+    c3.metric("🌎 Exterior", exterior)
 
-    fig.update_layout(
-        height=720,
-        margin=dict(l=0, r=0, t=0, b=0),
-        mapbox=dict(
-            bearing=0,
-            pitch=0
+    lat_plot = df["latitude"] + np.random.randn(len(df)) * 0.01
+    lon_plot = df["longitude"] + np.random.randn(len(df)) * 0.01
+
+    fig = go.Figure(
+        go.Scattermapbox(
+            lat=lat_plot,
+            lon=lon_plot,
+            mode="markers",
+            marker=dict(
+                size=10,
+                color=["#FFD700"] * len(lat_plot),
+                opacity=0.9
+            ),
+            text=df["cidade"],
+            hoverinfo="text"
         )
     )
 
-    # IMPORTANTE:
-    # scrollZoom e controles ficam no CONFIG do Streamlit,
-    # NÃO no layout do Plotly
-    st.plotly_chart(
-        fig,
-        use_container_width=True,
-        config={
-            "scrollZoom": True,      # zoom com scroll do mouse
-            "displayModeBar": True, # barra de ferramentas visível
-            "displaylogo": False,
-            "modeBarButtonsToAdd": [
-                "zoomInMapbox",
-                "zoomOutMapbox",
-                "resetViewMapbox"
-            ]
-        }
+    fig.update_layout(
+        mapbox=dict(style="open-street-map", center=dict(lat=0, lon=0), zoom=1),
+        margin={"r": 0, "t": 0, "l": 0, "b": 0},
+        height=600
     )
 
-# =====================
-# TEXTO INSTITUCIONAL
-# =====================
-st.markdown("""
-Cada ponto representa **uma presença consciente**.  
-A localização é **aproximada**, com espalhamento visual para preservar privacidade.
+    st.plotly_chart(fig, use_container_width=True)
 
-🌱 **Movimento da Paz Viva**  
-📍 Distribuição simbólica global
-""")
+st.divider()
+
+# ---------- BOTÃO VOLTAR ----------
+if st.button("⬅️ Home", use_container_width=True):
+    st.switch_page("streamlit_app.py")

@@ -121,3 +121,21 @@ st.divider()
 # ---------- MAPA ----------
 st.markdown(f"## {T['map_title']}")
 render_mapa()
+
+# (… TODO O ARQUIVO streamlit_app.py PERMANECE IGUAL AO ATUAL …)
+
+# ---------- MAPA ----------
+st.markdown(f"## {T['map_title']}")
+render_mapa()
+
+st.divider()
+
+# ---------- CRÉDITO INSTITUCIONAL ----------
+st.markdown(
+    """
+    <p style="text-align:center; font-size:14px; opacity:0.7; margin-top:40px">
+    Fundado no Brasil em 1º de Dezembro de 2025 por <strong>José Carlos Rosa Farias</strong>
+    </p>
+    """,
+    unsafe_allow_html=True
+)
