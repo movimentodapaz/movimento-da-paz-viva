@@ -6,6 +6,7 @@ import streamlit.components.v1 as components
 import base64
 from pathlib import Path
 
+# Idiomas ATIVOS e ESTÁVEIS
 from locales import pt, en, es
 
 
@@ -23,27 +24,32 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- IDIOMAS (EXPLÍCITO E SEGURO) ----------
+# ---------- LANGUAGES (COERENTE COM LOCALES) ----------
 LANGS = {
     "pt": pt.TEXTS,
     "en": en.TEXTS,
     "es": es.TEXTS,
 }
 
-# ---------- IDIOMA ATIVO ----------
+LANG_ORDER = ["pt", "en", "es"]
+
+# ---------- ACTIVE LANGUAGE ----------
 if "lang" not in st.session_state or st.session_state["lang"] not in LANGS:
     st.session_state["lang"] = "pt"
 
 lang = st.selectbox(
     "🌐 Language / Idioma",
-    options=["pt", "en", "es"],
-    index=["pt", "en", "es"].index(st.session_state["lang"]),
-    format_func=lambda x: LANGS[x]["lang_name"]
+    options=LANG_ORDER,
+    index=LANG_ORDER.index(st.session_state["lang"]),
+    format_func=lambda code: LANGS[code]["lang_name"]
 )
 
 st.session_state["lang"] = lang
 T = LANGS[lang]
-st.session_state["texts"] = T  # usado por mapa e cadastro
+
+# disponibiliza textos globalmente (mapa + cadastro)
+st.session_state["texts"] = T
+
 
 # ---------- LOGO ----------
 BASE_DIR = Path(__file__).resolve().parent
@@ -54,7 +60,8 @@ if logo_path.exists():
     with open(logo_path, "rb") as f:
         logo_base64 = base64.b64encode(f.read()).decode("utf-8")
 
-# ---------- NAVEGAÇÃO ----------
+
+# ---------- NAVIGATION ----------
 nav1, nav2, nav3 = st.columns(3)
 
 with nav1:
@@ -70,7 +77,8 @@ with nav3:
 
 st.divider()
 
-# ---------- TOPO ----------
+
+# ---------- HEADER ----------
 col1, col2, col3 = st.columns([1.2, 3.6, 1.2])
 
 with col1:
@@ -112,13 +120,15 @@ with col3:
 
 st.divider()
 
-# ---------- MAPA ----------
+
+# ---------- MAP ----------
 st.markdown(f"## {T['map_title']}")
 render_mapa()
 
 st.divider()
 
-# ---------- CRÉDITO ----------
+
+# ---------- CREDIT ----------
 st.markdown(
     f"""
     <p style="text-align:center; font-size:14px; opacity:0.7; margin-top:40px">
